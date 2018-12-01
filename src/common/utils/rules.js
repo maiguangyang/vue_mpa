@@ -81,6 +81,23 @@ export default {
     Vue = externalVue;
     // 绑定规则
     Vue.prototype.$rules = this.rules;
+
+    // 创建validate（form:rules验证方式）
+    Vue.prototype.$createValidator = (type, message) => {
+      return (rule, value, callback) => {
+        const rl = this.rules[type];
+
+        if (!_.isFunction(rl)) {
+          return callback(new Error(`no '${type}' rule`));
+        }
+        if (rl(value)) {
+          callback();
+        }
+        else {
+          callback(message);
+        }
+      };
+    };
     this.installed = true;
   },
 

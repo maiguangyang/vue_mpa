@@ -1,17 +1,19 @@
 <template>
   <div class="login">
     <div class="login-inner">
-      <div class="login-head">欢迎登陆</div>
+      <div class="login-head">注册账号</div>
       <div class="login-body">
-        <Form ref="formData" :model="formData" :rules="ruleInline">
-          <FormItem prop="phone">
-            <Input type="text" v-model="formData.phone" placeholder="请输入登录账号">
-              <Icon type="ios-person" size="16" slot="prepend"></Icon>
+        <Form ref="formData" :model="formData" :rules="ruleInline" :label-width="85">
+          <FormItem label="手机号码" prop="username">
+            <Input type="text" v-model="formData.username" maxlength="11" placeholder="请输入手机号码">
             </Input>
           </FormItem>
-          <FormItem prop="password">
+          <FormItem label="登录密码" prop="password">
             <Input type="password" v-model="formData.password" placeholder="请输入登录密码">
-              <Icon type="ios-lock" size="16" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
+          <FormItem label="确认密码" prop="password2">
+            <Input type="password" v-model="formData.password2" placeholder="请再次输入登录密码">
             </Input>
           </FormItem>
           <FormItem>
@@ -32,30 +34,28 @@
 
 <script>
 
-import http         from '@/common/service/http';
-import LocalStorage from '@/common/service/localStorage.cookie';
-
 export default {
   name: 'login',
   data() {
     return {
       loading: false,
       formData: {
-        phone: '',
+        username: '',
         password: '',
+        password2: '',
       },
       ruleInline: {
-        phone: [
-          { required: true, message: '请输入登录账号', trigger: 'blur' },
+        username: [
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          { validator: this.$createValidator('phone', '手机号码格式错误'), trigger: 'blur' },
         ],
         password: [
           { required: true, message: '请输入登录密码', trigger: 'blur' },
-          {
-            type: 'string',
-            min: 6,
-            message: '密码长度不能小于6位',
-            trigger: 'blur',
-          },
+          { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur' },
+        ],
+        password2: [
+          { required: true, message: '请再次输入登录密码', trigger: 'blur' },
+          { min: 6, message: '密码长度不能小于6位', trigger: 'blur' },
         ],
       },
     };
@@ -64,43 +64,23 @@ export default {
   },
   methods: {
     handleSubmit(name) {
-      const self = this;
-      self.loading = true;
+      this.loading = true;
 
-      self.$refs[name].validate((valid) => {
-        if (valid) {
-          http.Put('Welcome.Login', self.formData)
-            .then((res) => {
-              if (res.code * 1 === 0) {
-                const data = res.data;
-                self.$routes.get();
-                LocalStorage.set('Authorization', data, 60 * 60 * 23);
-
-                self.$Message.success(res.msg);
-
-                // 跳转到来路
-                setTimeout(() => {
-                  let route = { name: 'admin.Home' };
-                  const routeQuery = _.get(self.$route, 'query.dt');
-                  try {
-                    route = JSON.parse(routeQuery);
-                  }
-                  catch (err) {
-                    route = {
-                      name: 'admin.Home',
-                    };
-                  }
-                  self.$router.push(route);
-                }, 2000);
-              }
-              else {
-                self.loading = false;
-              }
-            });
-        } else {
-          self.$Message.error('请正确填写表单');
+      this.$refs[name].validate((valid) => {
+        if (this.formData.password !== this.formData.password2) {
+          this.$Message.error('2次输入的密码不一致');
           setTimeout(() => {
-            self.loading = false;
+            this.loading = false;
+          }, 500);
+          return;
+        }
+
+        if (valid) {
+          this.$Message.success('Success!');
+        } else {
+          this.$Message.error('请正确填写表单');
+          setTimeout(() => {
+            this.loading = false;
           }, 500);
         }
       });
@@ -121,7 +101,7 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 300px;
+      width: 350px;
       border: 1px solid #e8e8e8;
       border-radius: 5px;
       background: #fff;
@@ -142,6 +122,7 @@ export default {
       }
 
       .tips {
+        text-align: center;
         font-size: 12px;
         color: #999;
 

@@ -4,6 +4,9 @@
  */
 
 /* eslint-disable */
+import vue      from 'vue';
+import MD5  from 'crypto-js/md5';
+
 let Vue;
 
 class IsWechat {
@@ -26,6 +29,8 @@ class IsWechat {
     Vue = externalVue;
     // 验证方法
     Vue.prototype.$is_wechat = this.is_weixn();
+    Vue.prototype.$Bus     = new vue();
+    Vue.prototype.$md5     = MD5;
 
     this.installed = true;
   }

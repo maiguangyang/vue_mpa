@@ -10,6 +10,7 @@ import './registerServiceWorker';
 
 Vue.use(iView);
 
+// const store = createStore();
 Vue.config.productionTip = false;
 
 const App = Vue.extend({

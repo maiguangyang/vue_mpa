@@ -1,4 +1,4 @@
-# 说明文档
+# waibao
 
 ## Project setup
 ```
@@ -30,14 +30,11 @@ yarn run test:unit or run test:unit
 编辑器里面禁用tab，全部使用空格，默认2个空格，一定要把Tab转换成空格，否则代码编译不通过
 ```
 
+## 开发文档说明
+
  ### 目录结构说明
 -------------------
-  + 1.config：nginx配置文件
-  + 2.dist：build生成文件目录
-  + 3.generator：生产nginx脚手架
-  + 4.logs：日志目录
-  + 5.public：vue的默认文件
-  + 6.src：项目开发目录
+
 
 ### 开发-合并-发布
 - 1、每次开发新功能，先切换到develop分支，拉取最新代码

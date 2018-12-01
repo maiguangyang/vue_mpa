@@ -68,10 +68,10 @@ export default {
         data_port: [
           { type: 'number', min: 1, required: true, message: '请输入数据库端口', trigger: 'blur' },
         ],
-        user: [
+        data_user: [
           { required: true, message: '请输入数据库账号', trigger: 'blur' },
         ],
-        password: [
+        data_password: [
           { required: true, message: '请输入数据库密码', trigger: 'blur' },
         ],
         database: [
@@ -92,11 +92,8 @@ export default {
 
       this.$refs[name].validate((valid) => {
         if (valid) {
-          console.log(this.formData);
 
-          http.Post('Conf.sqlopen', {
-            content: this.formData,
-          })
+          http.Post('Conf.checkDataBase', this.formData)
             .then((res) => {
               console.log(res);
               this.loading = false;
@@ -112,8 +109,9 @@ export default {
     },
 
     randomDataBase() {
-      let str = '';
+      let str   = '';
       const arr = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
       for (let i = 0; i < 18; i++) {
         const pos = Math.round(Math.random() * (arr.length - 1));
         str += arr[pos];
